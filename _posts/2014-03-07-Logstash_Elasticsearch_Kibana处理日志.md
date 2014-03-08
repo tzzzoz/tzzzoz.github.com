@@ -54,9 +54,9 @@ But，如果一切都太简单的时候，最容易让人感到不安。Ruby的�
 
 #### 坑1: *为何刚配置好，就报错！！(没有认真读文档，不知道Logstash已经内置了Elasticsearch)*
 启动了**Logstash**以后(**.conf中已经添加elasticsearch { embedded => true }**)，再尝试从外部单独启动**Elasticsearch**，结果shell一直跑警告刷屏，大概错误信息如下：
-```
+`
 org.elasticsearch.transport.RemoteTransportException: Failed to deserialize exception response from stream
-```
+`
 到处Google，无解，别人提到的所有解决方法几乎都有尝试。  
 还以为是版本不兼容，又换了不同版本。还是不行。
 后来又重新找了几篇比较详细，结合示例的文章。
@@ -93,20 +93,23 @@ output {
 
 我获得的日志文件是静态的，我提前把它们文件到某个目录下。  
 我准备好.conf文件以后，激动地执行了：
-```bash
+{% highlight bash %}
 $ java -jar logstash-1.3.3-flatjar.jar agent -f test.conf -- web
-```
+{% endhighlight %}  
+
 然后检查这些文件的信息有没有输出到Elasticsearch中，  
-```bash
+{% highlight bash %}
 $ curl -s http://127.0.0.1:9200/_status\?pretty\=true
-```
+{% endhighlight %}
+
 什么都没有！？
 我试了无数次，重启了**Elasticsearch**，重启了iTerm，甚至重启了电脑，ça change rien...
 
 后来我试了官方教程中，给的示例配置，把文件路径修改成
-```text
+{% highlight text %}
 path => [ "/var/log/*.log", "/var/log/messages", "/var/log/syslog" ]
-```
+{% endhighlight %}
+
 我观察输出的情况，发现只有第一次启动时会读取整个文件，然后都是增量式的，当文件有变动时，**Logstash**才会实时的读取，并输出到**Elasticsearch**。
 
 然后针对我的需求，我就将所有文件暂时从目录下移除，开启了Logstash以后，再将它们移会，果然，可以正常的输出到**Elasticsearch**了。风扇开始嗡嗡嗡得转。
