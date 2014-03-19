@@ -5,7 +5,7 @@ permalink: /:categories/:year/:month/:day/:title
 img_url: http://tzzzoz.github.com/assets/images
 
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
-# markdown: rdiscount
+markdown: redcarpet
 # Code highlight
 # pygments: true
 highlighter: pygments
